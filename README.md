@@ -14,7 +14,7 @@ Enhance your [Pedestal](https://github.com/pedestal/pedestal) web service with [
 
 Why use this?
 -------------
-In academia - as well as in the corporate  world - SAML is a very popular way to implement [Single Sign-On](https://en.wikipedia.org/wiki/Single_sign-on) (SSO) for web services.<sup>[†](#saml-overview)</sup>
+In academia—as well as in the corporate  world—SAML is a very popular way to implement [Single Sign-On](https://en.wikipedia.org/wiki/Single_sign-on) (SSO) for web services.<sup>[†](#saml-overview)</sup>
 
 To log in to a web service, the so-called Service Provider (SP) must delegate user authentication to one or more Identity Providers (IdP). A common way to do this is by setting up [Shibboleth-sp](https://wiki.shibboleth.net/confluence/display/SP3/Home) as a separate web service and then integrating that with your own web service through a fairly involved setup involving XML files, using a Java web server as the middle-man.
 
@@ -24,7 +24,7 @@ Personally, I like keep things more tightly integrated and simpler to understand
 
 Who uses this?
 --------------
-We do! [Glossematics.dk](https://glossematics) depends on Pedestal SP to enable logging in through SAML.
+We do! [Glossematics.dk](https://glossematics.dk) depends on Pedestal SP to enable logging in through SAML.
 
 Be aware...
 -----------
@@ -85,7 +85,7 @@ https://github.com/quephird/saml-test#getting-things-running), specifically the 
 Once you're ready to put your web service into production, it should simply be a matter of swapping the mock IdP for the real one<sup>[†](#idp-caveat)</sup>.
 
 ### Keystore
-Java - and by extension Clojure - applications use a [Java KeyStore](https://en.wikipedia.org/wiki/Java_KeyStore) as the main way to store and access encryption keys. It is simply a file you create using the `keytool` CLI, with some associated Java methods providing access to the certificates within.
+Java—and by extension Clojure—applications use a [Java KeyStore](https://en.wikipedia.org/wiki/Java_KeyStore) as the main way to store and access encryption keys. It is simply a file you create using the `keytool` CLI, with some associated Java methods providing access to the certificates within.
 
 The KeyStore provides the credentials needed to properly sign your SAML requests. You give your web service access to the keystore by providing three required keys in the `:credential` submap of your config:
 
@@ -112,7 +112,7 @@ Authentication and authorisation
 --------------------------------
 SAML is meant to be a complete package for handling authentication and authorisation. **Pedestal SP** builds on this design with helpful functions in a simple to understand system based on Pedestal interceptors and the familiar Ring session middleware.
 
-All authorisation checks in **Pedestal SP** compare the user assertions that have been provided by the IdP to some kind of restriction defined by the developer. This includes authorisation checks at the route level, as well as inline authorisation checks - the latter which can be made in both Clojure and ClojureScript.
+All authorisation checks in **Pedestal SP** compare the user assertions that have been provided by the IdP to some kind of restriction defined by the developer. This includes authorisation checks at the route level, as well as inline authorisation checks—the latter which can be made in both Clojure and ClojureScript.
 
 ### SAML-authenticated sessions
 By default, the act of logging in via a SAML IdP is treated as successful authentication, though you can specify additional parameters that must be met through the `:validation` map in the config. The available options are explained in the `saml20-clj.sp.response/validate` function of [metabase/saml20-clj](https://github.com/metabase/saml20-clj). The authentication itself has been delegated entirely to this library.
@@ -120,7 +120,7 @@ By default, the act of logging in via a SAML IdP is treated as successful authen
 Once authenticated, the IdP response and its assertions are stored in an in-memory Ring session store with a limited TTL. The session store and other Ring session-related parameters can be customised via the `:session` key of the config map. Refer to `ring.middleware.session/wrap-session` for the available configuration options.
 
 ### Route authorisation
-Two route-level authorisation helper functions - `chain` and `permit-request?` - can be found in the `dk.cst.pedestal.sp.interceptors` namespace (aliased as `sp.ic` in the examples below). The `sp.ic/chain` function can be used to build an interceptor chain to restrict a route, e.g.
+Two route-level authorisation helper functions—`chain` and `permit-request?`—can be found in the `dk.cst.pedestal.sp.interceptors` namespace (aliased as `sp.ic` in the examples below). The `sp.ic/chain` function can be used to build an interceptor chain to restrict a route, e.g.
 
 ```clojure
 ["/some/route" (conj (sp.ic/chain conf :authenticated) `protected-page)]
@@ -155,7 +155,7 @@ Typically, the login flow will start in one of two ways:
 > _Note: The code in the `dk.cst.pedestal.sp.example` namespace illustrates how to make a basic SAML-enabled login page. It makes use of (or links to) all of the `/saml/...` endpoints described below._
 
 ### 302 GET `/saml/login`
-The SAML login flow starts with an HTTP GET request to `/saml/login`, likely along with `?RelayState=/path/to/resource` as a query string. The RelayState will be passed around the entire SAML flow and - if present - will be used to redirect the user back to where they came from at the end of a successful login. This first SAML endpoint redirects the user to the IdP specified in the config map.
+The SAML login flow starts with an HTTP GET request to `/saml/login`, likely along with `?RelayState=/path/to/resource` as a query string. The RelayState will be passed around the entire SAML flow and—if present—will be used to redirect the user back to where they came from at the end of a successful login. This first SAML endpoint redirects the user to the IdP specified in the config map.
 
 ### 200 GET `<URL of IdP>`
 We specify _who_ the IdP is in our config map, but we have no control over it otherwise. The IdP is where the actual login takes place. Once logged in, the IdP is supposed to redirect back to our `/saml/login` endpoint, this time using an HTTP POST request.
@@ -178,7 +178,7 @@ Apart from the standard SAML authentication endpoints, by default **Pedestal SP*
 Making a post request to this endpoint will return HTTP status 204 and delete SAML-related information pertaining to the user from the session store of the web service. Providing a `RelayState` query parameter will result in a 303 redirect instead, treating the value of the parameter as the requested location. This behaviour supports using this endpoint both via an async API call and via regular HTML form submission.
 
 ### 200 GET `/saml/response`
-Echoes back the SAML response XML received from the IdP during login - or HTTP status 403 when logged out. Serves as example usage of the `restrictions` interceptor chain.
+Echoes back the SAML response XML received from the IdP during login—or HTTP status 403 when logged out. Serves as example usage of the `restrictions` interceptor chain.
 
 ### 200 GET `/saml/assertions`
-Echoes back the user assertions contained in the SAML response received from the IdP during login - or HTTP status 403 when logged out. The  assertions are returned as EDN. Serves as example usage of the `restrictions` interceptor chain.
+Echoes back the user assertions contained in the SAML response received from the IdP during login—or HTTP status 403 when logged out. The  assertions are returned as EDN. Serves as example usage of the `restrictions` interceptor chain.
