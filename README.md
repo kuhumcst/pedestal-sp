@@ -1,5 +1,7 @@
 Pedestal SP
 ===========
+[![pedestal-sp](https://img.shields.io/clojars/v/dk.cst/pedestal-sp.svg)](https://clojars.org/dk.cst/pedestal-sp)
+
 Enhance your [Pedestal](https://github.com/pedestal/pedestal) web service with [SAML](https://en.wikipedia.org/wiki/Security_Assertion_Markup_Language) 2.0 routes to turn to it a valid [Service Provider](https://en.wikipedia.org/wiki/Service_provider_(SAML)) - or _SP_ for short.
 
 * [Why use this?](#why-use-this)
